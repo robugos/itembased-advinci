@@ -43,7 +43,7 @@ public class Main {
 		//getLista2().add(null);
 		//getLista2().add(null);
 		
-		System.out.print(teste.correlacao(getLista1(), getLista2()));
+		//System.out.print(teste.correlacao(getLista1(), getLista2()));
 		
 		/*for (int i=0; i < m.length; i++){
 			Arrays.asList(m).get(3);

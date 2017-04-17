@@ -1,7 +1,9 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import domain.Pearson;
@@ -91,6 +93,56 @@ public class ItemBased {
 		return varianciaI;
 	}
 
+	public void CalculaSimilares(int itemA, int userA){
+		setItemA(itemA);
+		setUserA(userA);
+		for (String item : getItensUA(getUserA())){
+			String[] parts = item.split(":");
+			//System.out.println("Antes das médias");
+			if ((mediaItem(getItemA())[0]-mediaItem(Integer.parseInt(parts[0]))[0]<=getD())){
+				double s = correlacao.correlacao(listaItem(getItemA()), listaItem(Integer.parseInt(parts[0])));
+				//System.out.println("|"+s);
+				if (s > 0.0) {
+					getPossib_Neighs().put(getNumSimilares()+":0", new String(""+(mediaItem(itemA)[0]+varianciaItem(itemA)))); /*WHAT THE HELL IS P?*/
+					getPossib_Neighs().put(getNumSimilares()+":1", new String(""+s));
+					setNumSimilares(getNumSimilares()+1);
+					//System.out.println("S É MAIOR QUE 0.0 = "+s);
+				}
+				
+			}			
+		}
+		
+		//System.out.println(getPossib_Neighs());
+		ordena(getPossib_Neighs());
+		
+		
+	}
+
+	private void ordena(Map<String, String> possib_Neighs) {
+		List<String> keys = new ArrayList<String>(possib_Neighs.keySet());
+		List<String> values = new ArrayList<String>(possib_Neighs.values());
+		Collections.sort(keys);
+		Collections.sort(values);
+		
+		Map<String, String> sortedMap = new HashMap<>();
+		
+		
+		//System.out.println(sortedMap);
+		/*for (String item : possib_Neighs.keySet()) {
+			values.add(possib_Neighs.get(item));
+		}
+		Collections.sort(values);*/
+		//System.out.println(values);
+	}
+
+	public Map<String, String> getPossib_Neighs() {
+		return Possib_Neighs;
+	}
+
+	public void setPossib_Neighs(Map<String, String> possib_Neighs) {
+		Possib_Neighs = possib_Neighs;
+	}
+	
 	public void setItensUA(ArrayList<String> itensUA) {
 		this.itensUA = itensUA;
 	}
@@ -141,38 +193,6 @@ public class ItemBased {
 
 	public void setNumSimilares(int numSimilares) {
 		this.numSimilares = numSimilares;
-	}
-	
-	public void CalculaSimilares(int itemA, int userA){
-		setItemA(itemA);
-		setUserA(userA);
-		for (String item : getItensUA(getUserA())){
-			String[] parts = item.split(":");
-			//System.out.println("Antes das médias");
-			if ((mediaItem(getItemA())[0]-mediaItem(Integer.parseInt(parts[0]))[0]<=getD())){
-				double s = correlacao.correlacao(listaItem(getItemA()), listaItem(Integer.parseInt(parts[0])));
-				System.out.println("|"+s);
-				if (s > 0.0) {
-					getPossib_Neighs().put(getNumSimilares()+":0", new String(""+mediaItem(itemA)[0]+varianciaItem(itemA)));
-					getPossib_Neighs().put(getNumSimilares()+":1", new String(""+s));
-					numSimilares = numSimilares + 1;
-					//System.out.println("S É MAIOR QUE 0.0 = "+s);
-				}
-				
-			}			
-		}
-		
-		
-		
-		
-	}
-
-	public Map<String, String> getPossib_Neighs() {
-		return Possib_Neighs;
-	}
-
-	public void setPossib_Neighs(Map<String, String> possib_Neighs) {
-		Possib_Neighs = possib_Neighs;
 	}
 	
 
