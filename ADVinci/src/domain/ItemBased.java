@@ -11,8 +11,8 @@ import domain.Pearson;
 public class ItemBased {
 	
 	private Pearson correlacao = new Pearson();
-	private static Map<String,String> Possib_Neighs = new HashMap<String,String>();
 	private int itemA, userA, k;
+	private static double[][] Possib_Neighs;
 	private double d = 0.5;
     private static Map<String,String> matrix = new HashMap<String,String>();
     private int iteracao, numSimilares = 0;
@@ -96,6 +96,7 @@ public class ItemBased {
 	public void CalculaSimilares(int itemA, int userA){
 		setItemA(itemA);
 		setUserA(userA);
+		double[][] possib_Neighs = getPossib_Neighs();
 		for (String item : getItensUA(getUserA())){
 			String[] parts = item.split(":");
 			//System.out.println("Antes das médias");
@@ -103,8 +104,10 @@ public class ItemBased {
 				double s = correlacao.correlacao(listaItem(getItemA()), listaItem(Integer.parseInt(parts[0])));
 				//System.out.println("|"+s);
 				if (s > 0.0) {
-					getPossib_Neighs().put(getNumSimilares()+":0", new String(""+(mediaItem(itemA)[0]+varianciaItem(itemA)))); /*WHAT THE HELL IS P?*/
-					getPossib_Neighs().put(getNumSimilares()+":1", new String(""+s));
+					//getPossib_Neighs().put(getNumSimilares()+":0", new String(""+(mediaItem(itemA)[0]+varianciaItem(itemA)))); /*WHAT THE HELL IS P?*/
+					possib_Neighs[getNumSimilares()][0] = mediaItem(itemA)[0]+varianciaItem(itemA);
+					//getPossib_Neighs().put(getNumSimilares()+":1", new String(""+s));
+					possib_Neighs[getNumSimilares()][1] = s;
 					setNumSimilares(getNumSimilares()+1);
 					//System.out.println("S É MAIOR QUE 0.0 = "+s);
 				}
@@ -118,28 +121,24 @@ public class ItemBased {
 		
 	}
 
-	private void ordena(Map<String, String> possib_Neighs) {
-		List<String> keys = new ArrayList<String>(possib_Neighs.keySet());
-		List<String> values = new ArrayList<String>(possib_Neighs.values());
-		Collections.sort(keys);
-		Collections.sort(values);
+	private void ordena(double[][] es) {
 		
-		Map<String, String> sortedMap = new HashMap<>();
-		
-		
-		//System.out.println(sortedMap);
-		/*for (String item : possib_Neighs.keySet()) {
-			values.add(possib_Neighs.get(item));
+	}
+	
+	public static Object getKeyFromValue(Map hm, Object value){
+		for (Object o : hm.keySet()){
+			if (hm.get(o).equals(value)){
+				return o;
+			}
 		}
-		Collections.sort(values);*/
-		//System.out.println(values);
+		return null;
 	}
 
-	public Map<String, String> getPossib_Neighs() {
+	public double[][] getPossib_Neighs() {
 		return Possib_Neighs;
 	}
 
-	public void setPossib_Neighs(Map<String, String> possib_Neighs) {
+	public void setPossib_Neighs(double[][] possib_Neighs) {
 		Possib_Neighs = possib_Neighs;
 	}
 	

@@ -50,7 +50,7 @@ public class Main {
 		}*/
 		
 		//ib.getItensUA(1);
-		ib.CalculaSimilares(3,1);
+		ib.CalculaSimilares(2,1);
 
 	}
 
