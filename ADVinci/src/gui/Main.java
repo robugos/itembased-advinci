@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import domain.ItemBased;
+import domain.ItemBasedADP;
 import domain.Pearson;
 
 
@@ -12,6 +13,7 @@ public class Main {
 	
 	static Pearson teste = new Pearson();
 	static ItemBased ib = new ItemBased();
+	static ItemBasedADP iba = new ItemBasedADP();
 	private static List<Long> lista1 = new ArrayList<Long>();
 	private static List<Long> lista2 = new ArrayList<Long>();
 	static int linha1[] = {3,1,0};
@@ -28,15 +30,17 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 
-		/*getLista1().add(null);
-		getLista1().add((long) 5);
-		getLista1().add(null);
-		getLista1().add((long) 4);
+		getLista1().add((long) 1);
+		getLista1().add((long) 1);
+		getLista1().add((long) 0);
+		getLista1().add((long) 2);
+		getLista1().add((long) 2);
 		
 		getLista2().add((long) 4);
 		getLista2().add((long) 4);
-		getLista2().add((long) 2);
-		getLista2().add((long) 3);*/
+		getLista2().add((long) 4);
+		getLista2().add((long) 5);
+		getLista2().add((long) 5);
 		
 		//getLista2().add((long) 1);
 		//getLista2().add((long) 4);
@@ -50,7 +54,11 @@ public class Main {
 		}*/
 		
 		//ib.getItensUA(1);
-		ib.CalculaSimilares(2,1);
+		//ib.CalculaSimilares(2,1);
+		//iba.getUserItens(4);
+		//iba.getSomaItem(3);
+		
+		iba.CalculaSimilares(2, 3);
 
 	}
 

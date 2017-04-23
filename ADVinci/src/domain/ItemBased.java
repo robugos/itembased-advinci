@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,30 +13,31 @@ public class ItemBased {
 	
 	private Pearson correlacao = new Pearson();
 	private int itemA, userA, k;
-	private static double[][] Possib_Neighs;
+	private static Map<String, String> Possib_Neighs;
 	private double d = 0.5;
-    private static Map<String,String> matrix = new HashMap<String,String>();
+    private static List<String> matrix = new ArrayList<String>();
     private int iteracao, numSimilares = 0;
-	private ArrayList<String> itensUA = new ArrayList<String>();
 	static /*limpar essa inserção depois*/
     {
-    	matrix.put( "1:1", new String("3"));
-		matrix.put( "2:1", new String("1"));
-		matrix.put( "3:1", new String());
-		matrix.put( "1:2", new String());
-		matrix.put( "2:2", new String("3"));
-		matrix.put( "3:2", new String());
-		matrix.put( "1:3", new String());
-		matrix.put( "2:3", new String("4"));
-		matrix.put( "3:3", new String("3"));
-		matrix.put( "1:4", new String("4"));
-		matrix.put( "2:4", new String());
-		matrix.put( "3:4", new String());
+		
+		//PONTO:ITEM:USER
+    	matrix.add("P3:I1:U1");
+		matrix.add("P1:I2:U1");
+		matrix.add("P0:I3:U1");
+		matrix.add("P0:I1:U2");
+		matrix.add("P3:I2:U2");
+		matrix.add("P0:I3:U2");
+		matrix.add("P0:I1:U3");
+		matrix.add("P4:I2:U3");
+		matrix.add("P3:I3:U3");
+		matrix.add("P4:I1:U4");
+		matrix.add("P0:I2:U4");
+		matrix.add("P0:I3:U4");
     }
 	
 
 	
-	public ArrayList<String> getItensUA(int userA) {
+	/*public List<String> getItensUA(int userA) {
 		for (String item : matrix.keySet()){
 			if (item.contains(":"+userA) && !matrix.get(item).isEmpty()){
 				String[] parts = item.split(":");
@@ -44,9 +46,19 @@ public class ItemBased {
 		}
 		//System.out.println(itensUA);
 		return itensUA;
+	}*/
+	public List<String> getItensUA(int userA){
+		List<String> itensUA = new ArrayList<String>();
+		for (String item : matrix){
+			if (item.contains(":U"+userA)){
+				String[] parts = item.split(":");
+				itensUA.add(parts[2].substring(1, 2));
+			}
+		}
+		return itensUA;
 	}
 	
-	public List<Long> listaItem(int itemN){
+	/*public List<Long> listaItem(int itemN){
 		List<Long> lista = new ArrayList<Long>();
 		for (String item : matrix.keySet()){
 			if (item.contains(itemN+":") && !matrix.get(item).isEmpty()){
@@ -59,13 +71,28 @@ public class ItemBased {
 		}
 		//System.out.println(lista);
 		return lista;
+	}*/
+	public List<Long> listaItem(int itemN){
+		List<Long> lista = new ArrayList<Long>();
+		for (String item : matrix){
+			if (item.contains(":I"+itemN) && !item.isEmpty()){
+				//System.out.println(item.substring(3,6));
+				lista.add((long) Integer.parseInt(item.substring(4, 5)));
+				
+			}else if (item.contains(":I"+itemN) && item.isEmpty()){
+				lista.add(null);
+				
+			}
+		}
+		//System.out.println(lista);
+		return lista;
 	}
 	
 	public int somaItem(int itemN){
 		int somaI = 0;
-		for (String item : matrix.keySet()){
-			if (item.contains(itemN+":") && !matrix.get(item).isEmpty()){
-				somaI = somaI+Integer.parseInt(matrix.get(item));
+		for (String item : matrix){
+			if (item.contains(":I"+itemN+":") && !item.isEmpty()){
+				somaI = somaI+Integer.parseInt(item.substring(4, 5));
 			}
 		}
 		//System.out.println(mediaIA);
@@ -75,8 +102,8 @@ public class ItemBased {
 	public double[] mediaItem(int itemN){
 		double mediaI = 0;
 		double q = 0;
-		for (String item : matrix.keySet()){
-			if (item.contains(itemN+":") && !matrix.get(item).isEmpty()){
+		for (String item : matrix){
+			if (item.contains(":I"+itemN+":") && !item.isEmpty()){
 				q = q+1;
 			}
 		}
@@ -96,36 +123,40 @@ public class ItemBased {
 	public void CalculaSimilares(int itemA, int userA){
 		setItemA(itemA);
 		setUserA(userA);
-		double[][] possib_Neighs = getPossib_Neighs();
-		for (String item : getItensUA(getUserA())){
+		//System.out.print(itemA+" "+userA);
+		for (String item : getItensUA(userA)){
 			String[] parts = item.split(":");
+			System.out.println("ITEM: "+item);
+			System.out.println("ARRAY: "+Arrays.toString(parts));
 			//System.out.println("Antes das médias");
-			if ((mediaItem(getItemA())[0]-mediaItem(Integer.parseInt(parts[0]))[0]<=getD())){
-				double s = correlacao.correlacao(listaItem(getItemA()), listaItem(Integer.parseInt(parts[0])));
-				//System.out.println("|"+s);
-				if (s > 0.0) {
-					//getPossib_Neighs().put(getNumSimilares()+":0", new String(""+(mediaItem(itemA)[0]+varianciaItem(itemA)))); /*WHAT THE HELL IS P?*/
-					possib_Neighs[getNumSimilares()][0] = mediaItem(itemA)[0]+varianciaItem(itemA);
-					//getPossib_Neighs().put(getNumSimilares()+":1", new String(""+s));
-					possib_Neighs[getNumSimilares()][1] = s;
-					setNumSimilares(getNumSimilares()+1);
-					//System.out.println("S É MAIOR QUE 0.0 = "+s);
-				}
+			////if ((mediaItem(itemA)[0]-mediaItem(itemN)[0]<=getD())){
+				///double s = correlacao.correlacao(listaItem(getItemA()), listaItem(itemN));
+				////System.out.println("|"+s);
+				////if (s > 0.0) {
+					
+				////}
 				
-			}			
+			////}			
 		}
-		
-		//System.out.println(getPossib_Neighs());
-		ordena(getPossib_Neighs());
 		
 		
 	}
 
-	private void ordena(double[][] es) {
+	private void ordena(Map<String,String> possib_Neighs) {
+		Map<String,Integer> chaves = new HashMap<String,Integer>();
+		Map<String,Integer> valores = new HashMap<String,Integer>();
+		for (int i=0; i<possib_Neighs.size(); i++){
+			chaves.put((String) getKeyFromValue(possib_Neighs,possib_Neighs.get(i)), i);
+			valores.put(possib_Neighs.get(i), i);
+			
+		}
+		System.out.println(chaves);
+		System.out.println(valores);
+		
 		
 	}
 	
-	public static Object getKeyFromValue(Map hm, Object value){
+	public static Object getKeyFromValue(Map<String,String> hm, Object value){
 		for (Object o : hm.keySet()){
 			if (hm.get(o).equals(value)){
 				return o;
@@ -134,16 +165,12 @@ public class ItemBased {
 		return null;
 	}
 
-	public double[][] getPossib_Neighs() {
+	public Map<String, String> getPossib_Neighs() {
 		return Possib_Neighs;
 	}
 
-	public void setPossib_Neighs(double[][] possib_Neighs) {
+	public void setPossib_Neighs(Map<String, String> possib_Neighs) {
 		Possib_Neighs = possib_Neighs;
-	}
-	
-	public void setItensUA(ArrayList<String> itensUA) {
-		this.itensUA = itensUA;
 	}
 	
 	public int getItemA() {
@@ -162,11 +189,11 @@ public class ItemBased {
 		this.userA = userA;
 	}	
 
-	public Map<String,String> getMatrix() {
+	public List<String> getMatrix() {
 		return matrix;
 	}
 
-	public void setMatrix(Map<String,String> matrix) {
+	public void setMatrix(List<String> matrix) {
 		ItemBased.matrix = matrix;
 	}
 	
