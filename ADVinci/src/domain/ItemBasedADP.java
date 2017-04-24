@@ -167,7 +167,7 @@ public class ItemBasedADP {
 			setNumSimilares(getNumSimilares()+ 1);
 		}
 		
-		//AQUI double acres = 1 - 
+		/*AQUI double acres = 1 -*/ 
 		
 		
 	}
