@@ -49,6 +49,7 @@ public class ItemBasedADP {
 	}
 	private List<String> possib_neighs = new ArrayList<String>();
 	private double d = 1.0;
+	private int k = 20;
 	private int iteracao, numSimilares = 0;
 
 	private Pearson correlacao = new Pearson();
@@ -150,12 +151,24 @@ public class ItemBasedADP {
 		}
 		ordenaPossib_Neighs(getPossib_neighs());
 		double limite = getNumSimilares()/2.0;
-		/*for (int j=0; j<=limite; j++){
-			if (getNumSimilares() < getPossib_neighs().size() && getPossib_neighs().get(j).contains(":"+getNumSimilares()+":")){
-				//getPossib_neighs().add(p+":"+getNumSimilares()+":0");
-				getPossib_neighs().set(j, element)
+		int j = 0;
+		while (j < limite && getNumSimilares() < getK()){
+			//getPossib_neighs().add(p+":"+getNumSimilares()+":0");
+			for (String item : getPossib_neighs()){
+				if (item.contains(":"+j+":")){
+					String[] parts = item.split(":");
+					if (parts[2] == "0"){
+						getPossib_neighs().add(parts[0]+getNumSimilares()+"0");
+					}else{
+						getPossib_neighs().add(parts[0]+getNumSimilares()+"1");
+					}					
+				}
 			}
-		}*/
+			setNumSimilares(getNumSimilares()+ 1);
+		}
+		
+		//AQUI double acres = 1 - 
+		
 		
 	}
 	
@@ -185,6 +198,14 @@ public class ItemBasedADP {
 
 	public void setNumSimilares(int numSimilares) {
 		this.numSimilares = numSimilares;
+	}
+
+	public int getK() {
+		return k;
+	}
+
+	public void setK(int k) {
+		this.k = k;
 	}
 
 }
