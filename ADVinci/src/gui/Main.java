@@ -1,5 +1,6 @@
 package gui;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -7,10 +8,12 @@ import java.util.List;
 import domain.ItemBased;
 import domain.ItemBasedADP;
 import domain.Pearson;
+import domain.Recommender;
 
 
 public class Main {
 	
+	static Recommender rec = new Recommender();
 	static Pearson teste = new Pearson();
 	static ItemBased ib = new ItemBased();
 	static ItemBasedADP iba = new ItemBasedADP();
@@ -58,8 +61,14 @@ public class Main {
 		//iba.getUserItens(4);
 		//iba.getSomaItem(3);
 		
-		iba.CalculaSimilares(2, 3);
-
+		//iba.CalculaSimilares(2, 3);
+		
+		try {
+			Recommender.calcular();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 
